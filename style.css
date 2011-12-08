@@ -1,0 +1,35 @@
+* {
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+}
+body{
+    
+}
+
+#logo{
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+#foot{
+    margin-top: 20px;
+    text-align:center;
+}
+
+.clear{
+    clear: both;
+}
+#left{
+    float: left;
+    width: 250px;
+    border: 1px solid blue;
+}
+#right{
+    float: right;
+    width: 540px;
+    border: 1px solid red;
+}
+#frame{
+    width: 800px;
+    border: 1px solid blue;
+}

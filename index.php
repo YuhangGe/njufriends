@@ -11,16 +11,16 @@
     
     function getUser(){
         global $client,$user;
-        //Èç¹ûÊı¾İ¿âÖĞÓĞÓÃ»§
+        //å¦‚æœæ•°æ®åº“ä¸­æœ‰ç”¨æˆ·
         /*
          * $user['id'] = get_uid();
          * */
-        //·µ»Ø
+        //è¿”å›
         
-        //Èç¹ûÊı¾İ¿âÖĞÃ»ÓĞÓÃ»§ĞÅÏ¢
+        //å¦‚æœæ•°æ®åº“ä¸­æ²¡æœ‰ç”¨æˆ·ä¿¡æ¯
         
          $r_u = $client->POST('users.getInfo',array($user['rrid'],'name,tinyurl'));
-         var_dump($r_u );
+    
          if($r_u[0]){
             $user['name']=$r_u[0]['name'];
             
@@ -30,10 +30,40 @@
 ?>
 <!doctype html>
 <html>
-    <head></head>
+    <head>
+        <title>Hello</title>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+        <script type="text/javascript" src="renren/renren-yc.js"></script>
+        <script type="text/javascript">
+            dialog = null;
+            function test_ui(){
+                dialog = Renren.ui({
+                    url : 'feed',
+                    display : 'iframe',          
+                   
+                    params : {
+                        app_id : 172440,
+                        url:'http://www.njufriends.com:8080/nju/index.php?aid=888',
+                        name:'å‘èµ·äº†æ´»åŠ¨-è‡ªä¹ ',
+                        description:'æµ‹è¯•dialog',
+                        image:'http://at-img4.tdimg.com/board/2011/5/46465.jpg',
+                        redirect_uri : 'http://www.njufriends.com:8080/nju/callback.html',
+                        access_token: '<?php echo $user['access_token'];?>',
+                        action_name : 'å»å‘¼æœ‹å”¤å‹é€›é€›',
+                        action_link : 'http://apps.renren.com/njufriends/ '
+                    }
+                });
+      
+            }
+            
+            function closeDialog(){
+                dialog.closeUI();
+            }
+        </script>
+    </head>
     <body>
-       <?php
-        var_dump($user);
-       ?>
+       <div><?php echo $user['name'];?></div>
+       <div><input type="button" onclick="test_ui();" value="Test" /></div>
+       
     </body>
 </html>
