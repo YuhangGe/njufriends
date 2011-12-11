@@ -2,12 +2,17 @@
     list-style: none;
     margin: 0px;
     padding: 0px;
-}
-#frame{
-    width: 800px;
-    border: 1px solid blue;
+	font-size: 13px;
+	font-family: "宋体";
 }
 
+a{
+	text-decoration: none;
+	color: #005eac;
+}
+img{
+	border: 0px;
+}
 body{
     
 }
@@ -24,43 +29,92 @@ body{
 .clear{
     clear: both;
 }
-#info{
-    float: left;
-    width: 500px;
+#main {
+	padding-left: 3px;
+	width: 720px;
 }
-#op_panel{
+#main h2{
+	font-size: 20px;
+	color: #4a4a4a;
+	margin-bottom: 20px;
+}
+#main h3{
+	font-size: 14px;
+	color: #bf6b00;
+	margin:25px 0px 13px 0px;
+}
+.general{
+	margin:10px 0px 25px 0px;
+}
+.pic{
+	float: left;
+	
+}
+.pic img{
+	width: 120px;
+}
+.info{
+    float: left;
+    width: 400px;
+    margin-left: 25px;
+}
+.info p{
+	margin-bottom: 5px;
+	color: #202020;
+}
+.op{
     float: left;
     width: 100px;
-    border-left:1px gray dotted;
+    padding-left: 5px;
+    border-left:1px dashed #cee1ee;
 }
-
+.op a{
+	margin-bottom: 5px;
+	color: #e97316;
+	font-size: 13px;
+}
+.op a:hover{
+	text-decoration: underline;
+}
 .person {
     display: inline-block;
+    margin: 3px;
+    color: #005eac;
 }
-
-.person img{
+.person a{
+	display:block;
+	text-align: center;
+	margin-bottom: 1px;
+}
+.person:hover{
+	text-decoration: underline;
+}
+.person a img{
     width: 50px;
     height: 50px;
     display: block;
+    margin: auto;
 }
-.person a{
-    display: block;
-}
+
 
 .comment li{
     position: relative;
-    padding-left: 55px;
-    height: 55px;
+    padding-left: 35px;
+    height: 35px;
     margin-bottom: 5px;
+    font-size: 12px;
 }
-.comment img{
+.c_head{
     position: absolute;
     left: 0px;
-    height: 40px;
-    width: 40px;
 }
-.comment .time{
-    text-align: right;
+.comment img{
+	height: 30px;
+    width: 30px;
+}
+.c_time{
+  	color: gray;
+  	font-size: 11px;
 }
 #more_comment{
     float: right;
