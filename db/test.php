@@ -15,7 +15,8 @@ require("db_function.php");
 //var_dump(insert_Comment("1","2","good one","2011-12-21-00:00:12"));
 //$tmp = array('asdf','fasd','ghjk');
 //var_dump(get_UidList($tmp));
-$tmp = array(1,2);
-var_dump(getActivityListByCareFriends(0,"time",$tmp));
+$tmp = array("asdf","ghjk");
+var_dump(get_UidList($tmp));
+//var_dump(getActivityListByCareFriends(0,"time",$tmp));
 //echo transDate("2010-9-10 10:21:00","2010-9-10 12:34:22");
 ?>

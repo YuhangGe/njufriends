@@ -228,11 +228,26 @@
 	function get_UidList($RRidList)
 	{
 		$uidList = array();
-		for($i=0;$i<count($RRidList);$i++)
+		if($RRidList!=null)
+		{	
+			$strIn="where rrid in(";
+			$strIn = $strIn."'$RRidList[0]'";
+			for($i=1;$i<count($RRidList);$i++)
+			{
+				$strIn = $strIn.",'$RRidList[$i]'";
+			}
+			$strIn = $strIn.")";
+		}
+		$sqlstr = "select uid from user $strIn";
+		//echo $sqlstr;
+		$result = mysql_query($sqlstr);
+		$num = mysql_num_rows($result);
+		if($num==0)
 		{
-			$row = get_User($RRidList[$i]);
-			if($row==null)
-				continue;
+			return array();
+		}
+		while($row=mysql_fetch_assoc($result))
+		{
 			array_push($uidList,$row['uid']);
 		}
 		return $uidList;
