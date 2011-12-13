@@ -17,4 +17,5 @@ require("db_function.php");
 //var_dump(get_UidList($tmp));
 $tmp = array(1,2);
 var_dump(getActivityListByCareFriends(0,"time",$tmp));
+//echo transDate("2010-9-10 10:21:00","2010-9-10 12:34:22");
 ?>
