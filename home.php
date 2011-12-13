@@ -1,9 +1,13 @@
 <?php
+	@session_start();
 	require("db/db_function.php");
 	$types = get_TypeList();
-	if($_REQUEST['rridList']!=null)
+	
+	//var_dump($_SESSION);
+	
+	if(!empty($_SESSION['u_list']))
 	{
-		$rridList = explode(",",$_REQUEST['uidList']);
+		$rridList = explode(",",$_SESSION['u_list']);
 		$activities = getActivityListByCareFriends($_REQUEST['type_id'],$_REQUEST['orderBy'],$rridList);
 	}
 	else
@@ -16,7 +20,7 @@
     <head>
         <title>Hello</title>
         <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-        <link style="text/css" rel="stylesheet" href="style.css" />
+        <link style="text/css" rel="stylesheet" href="css/style.css" />
     </head>
     <body>
        <div id="frame">
@@ -53,7 +57,7 @@
                     <li class="list-item">
                     	<div class="i-left">
                     	<?php 
-                    		if($activity['pic_url']==null)
+                    		if(empty($activity['pic_url']))
                     		{
                     			echo "<a href='#'><img src='images/e563905.jpg' /></a>";
                     		}

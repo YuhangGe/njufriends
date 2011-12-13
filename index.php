@@ -24,7 +24,7 @@ function init_user($token){
 	require_once "db/db_function.php";
 
 	//如果数据库中有用户
-	$ur = get_User($rrid['uid']);
+	$ur = get_UserByRRid($rrid['uid']);
 	if ($ur == null) {
 		$r_u = $client -> POST('users.getInfo', array($rrid['uid'], 'name,tinyurl'));
 		if (empty($r_u[0])) {
