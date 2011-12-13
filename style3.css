@@ -1,0 +1,67 @@
+* {
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+}
+#frame{
+    width: 800px;
+    border: 1px solid blue;
+}
+
+body{
+    
+}
+
+#logo{
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+#foot{
+    margin-top: 20px;
+    text-align:center;
+}
+
+.clear{
+    clear: both;
+}
+#info{
+    float: left;
+    width: 500px;
+}
+#op_panel{
+    float: left;
+    width: 100px;
+    border-left:1px gray dotted;
+}
+
+.person {
+    display: inline-block;
+}
+
+.person img{
+    width: 50px;
+    height: 50px;
+    display: block;
+}
+.person a{
+    display: block;
+}
+
+.comment li{
+    position: relative;
+    padding-left: 55px;
+    height: 55px;
+    margin-bottom: 5px;
+}
+.comment img{
+    position: absolute;
+    left: 0px;
+    height: 40px;
+    width: 40px;
+}
+.comment .time{
+    text-align: right;
+}
+#more_comment{
+    float: right;
+}
