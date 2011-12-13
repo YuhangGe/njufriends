@@ -30,6 +30,7 @@ $config->decodeFormat	= 'json';	//默认的返回格式，根据实际情况修�
  *					  其它的都可以根据你的实现情况来处理，以英文半角状态下的逗号来分割各个参数。
  */
 $config->APIMapping		= array( 
+		'users.getLoggedInUser' => '',
 		'admin.getAllocation' => '',
 		'connect.getUnconnectedFriendsCount' => '',
 		'friends.areFriends' => 'uids1,uids2',
