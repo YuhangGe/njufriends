@@ -4,15 +4,25 @@
 	$types = get_TypeList();
 	
 	//var_dump($_SESSION);
+	$order_by = "time";
+	if(!empty($_REQUEST['order']))
+		$order_by=$_REQUEST['order'];
+	$type_id = 0;
+	if(!empty($_REQUEST['type']))
+		$type_id = $_REQUEST['type'];
 	
 	if(!empty($_SESSION['u_list']))
 	{
 		$rridList = explode(",",$_SESSION['u_list']);
-		$activities = getActivityListByCareFriends($_REQUEST['type_id'],$_REQUEST['orderBy'],$rridList);
+		$activities = getActivityListByCareFriends($type_id,$order_by,$rridList);
 	}
 	else
 	{
-		$activities = get_ActivityList($_REQUEST['type_id'],$_REQUEST['orderBy']);
+		$activities = get_ActivityList($type_id,$order_by);
+	}
+	
+	function get_href($tid,$ord){
+		return "home.php?type=$tid&order=$ord";
 	}
 ?>
 <!doctype html>
@@ -30,23 +40,18 @@
         <div id="main">
             <div id="left">
             	<ul>
-            		<li><a href="orderBy='time'">时间</a></li>
-            		<li><a href="orderBy='join_num'" class="cur_sort">热门度</a></li>
-            		<li><a href="rridList='1,2,3'">好友参与</a></li>
+            		<li><a href="<?php echo get_href($type_id,"time");?>">时间</a></li>
+            		<li><a href="<?php echo get_href($type_id,"join_number");?>">热门度</a></li>
+            		<li><a href="<?php echo get_href($type_id,"time");?>">好友参与</a></li>
             	</ul>
                 <ul>
-                    <li><a href="type_id=0">所有类别</a></li>
+                    <li><a href="<?php echo get_href(0,$order_by);?>" <?php echo ($type_id==0)?"class='cur_class'":"";?>>所有类别</a></li>
                     <?php 
                     	foreach($types as $type)
                     	{
-                    		if($type['type_id']==$_REQUEST['type_id'])
-                    		{
-                    			echo "<li><a href='type_id=".$type['type_id']."' class='cur_class'>".$type['tname']."</a></li>";
-                    		}
-                    		else
-                    		{
-                    			echo "<li><a href='type_id=".$type['type_id']."'>".$type['tname']."</a></li>";
-                    		}
+                    		$tid = $type['type_id'];
+							$t_href = get_href($tid,$order_by);
+							echo "<li><a href='$t_href' ".($tid==$type_id?"class='cur_class'":"").">".$type['tname']."</a></li>";
                     	}
                     ?>
                 </ul>
