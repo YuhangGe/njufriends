@@ -4,7 +4,7 @@
 	$activity = get_Activity($aid,null);
 	if($activity==null)
 	{
-		header("Location: index.php");
+		header("Location: home.php");
 	}
 	$leader = get_UserByUid($activity['leader_id']);
 ?>
