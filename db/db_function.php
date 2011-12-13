@@ -11,9 +11,25 @@
 	 * 		["uname"]=> string(6) "龚晨" ["headurl"]=> string(9) "asfd.adsf" } 
 	 * else return null
 	 */
-	function get_User($rrid)
+	function get_UserByRRid($rrid)
 	{	
 		$sqlstr="select * from user where rrid='$rrid';";
+		$result = mysql_query($sqlstr);
+		$rows = mysql_num_rows($result);
+		if($rows==0)
+		{
+			return null;
+		}
+		else
+		{
+			$row = mysql_fetch_assoc($result);
+			return $row;
+		}
+	}
+	
+	function get_UserByUid($uid)
+	{
+	$sqlstr="select * from user where uid='$uid';";
 		$result = mysql_query($sqlstr);
 		$rows = mysql_num_rows($result);
 		if($rows==0)
@@ -56,7 +72,7 @@
 		}
 		$sqlstr="select caremember.uid as uid,user.uname as uname,user.headurl as headurl from caremember,user where caremember.aid='$aid' and user.uid=caremember.uid $strIn $strLimit;";
 		$result = mysql_query($sqlstr);
-		echo $sqlstr;
+		//echo $sqlstr;
 		$rows = mysql_num_rows($result);
 		if($rows==0)
 		{
@@ -165,9 +181,37 @@
 	 * return the activity with the selected aid
 	 * if failed renturn null
 	 */
-	function get_Activity($aid)
+	function get_Activity($aid,$uidList)
 	{
-		$sqlstr="select * from activity where aid=$aid;";
+		$strIn="";
+		$strgroup="";
+		if($uidList!=null)
+		{
+			$strIn="and activity.aid=joinmember.aid and joinmember.uid in (";
+			$strIn = $strIn."'$uidList[0]'";
+			for($i=1;$i<count($uidList);$i++)
+			{
+				$strIn = $strIn.",'$uidList[$i]'";
+			}
+			$strIn = $strIn.")";
+			$strgroup = " group by activity.aid ";
+			$strplue = "count(*) as num,activity.aid as aid, activity.name as name,activity.start_time as start_time,
+						activity.end_time as end_time,activity.location as location,
+						activity.type_id as type_id,activity.leader_id as leader_id,
+						activity.care_num as care_num, activity.join_num as join_num,
+						user.uname as uname,activity.description as description, user.rrid as rrid";
+			$sqlstr="select $strplue from activity,user,joinmember where activity.aid=$aid $strIn $strgroup;";
+		}
+		else
+		{
+			$strplue = "activity.aid as aid, activity.name as name,activity.start_time as start_time,
+						activity.end_time as end_time,activity.location as location,
+						activity.type_id as type_id,activity.leader_id as leader_id,
+						activity.care_num as care_num, activity.join_num as join_num,
+						user.uname as uname,activity.description as description, user.rrid as rrid";
+			$sqlstr="select $strplue from activity,user where activity.aid=$aid;";
+		}
+		//echo $sqlstr;
 		$result =mysql_query($sqlstr);
 		$rows = mysql_num_rows($result);
 		if($rows==0)
@@ -204,26 +248,27 @@
 		$strplue = "activity.aid as aid, activity.name as name,activity.start_time as start_time,
 					activity.end_time as end_time,activity.location as location,
 					activity.type_id as type_id,activity.leader_id as leader_id,
-					activity.care_num as care_num, activity.join_num as join_num";
+					activity.care_num as care_num, activity.join_num as join_num,
+					user.rrid as rrid,user.uname as uname";
 		$strTime = "end_time>=NOW()";
 		if($typeId==0)
 		{
 			switch($orderBy)
 			{
 			case null:
-				$sqlstr = "select $strplue from activity where $strTime;";
+				$sqlstr = "select $strplue from activity,user where activity.leader_id=user.uid and $strTime;";
 				break;
 			case "time":
-				$sqlstr = "select $strplue from activity where $strTime order by aid desc;";
+				$sqlstr = "select $strplue from activity,user where activity.leader_id=user.uid and $strTime order by aid desc;";
 				break;
 			case "care_num":
-				$sqlstr = "select $strplue from activity where $strTime order  by order_num desc where $strTime;";
+				$sqlstr = "select $strplue from activity,user where activity.leader_id=user.uid and $strTime order  by order_num desc where $strTime;";
 				break;
 			case "join_num":
-				$sqlstr = "select $strplue from activity where $strTimeorder by join_num desc;";
+				$sqlstr = "select $strplue from activity,user where activity.leader_id=user.uid and $strTimeorder by join_num desc;";
 				break;
 			default:
-				$sqlstr = "select $strplue from activity where $strTime;";
+				$sqlstr = "select $strplue from activity,user where activity.leader_id=user.uid and $strTime;";
 				break;
 			}
 		}
@@ -232,19 +277,19 @@
 			switch($orderBy)
 			{
 				case null:
-					$sqlstr = "select $strplue from activity where type_id=$typeId and $strTime;";
+					$sqlstr = "select $strplue from activity,user where activity.leader_id=user.uid and type_id=$typeId and $strTime;";
 					break;
 				case "time":
-					$sqlstr = "select $strplue from activity where type_id=$typeId  and $strTime order by aid desc;";
+					$sqlstr = "select $strplue from activity,user where activity.leader_id=user.uid and type_id=$typeId  and $strTime order by aid desc;";
 					break;
 				case "care_num":
-					$sqlstr = "select $strplue from activity where type_id=$typeId  and $strTime order by order_num desc;";
+					$sqlstr = "select $strplue from activity,user where activity.leader_id=user.uid and type_id=$typeId  and $strTime order by order_num desc;";
 					break;
 				case "join_num":
-					$sqlstr = "select $strplue from activity where type_id=$typeId  and $strTime order by join_num desc;";
+					$sqlstr = "select $strplue from activity,user where activity.leader_id=user.uid and type_id=$typeId  and $strTime order by join_num desc;";
 					break;
 				default:
-					$sqlstr = "select $strplue from activity where type_id=$typeId  and $strTime;";
+					$sqlstr = "select $strplue from activity,user where activity.leader_id=user.uid and type_id=$typeId  and $strTime;";
 					break;
 			}
 			
@@ -268,6 +313,7 @@
 	function getActivityListByCareFriends($typeId,$orderBy,$uidList)
 	{
 		$strIn="";
+		$strgroup="";
 		if($uidList!=null)
 		{	
 			$strIn="and activity.aid=caremember.aid and caremember.uid in (";
@@ -277,30 +323,32 @@
 				$strIn = $strIn.",'$uidList[$i]'";
 			}
 			$strIn = $strIn.")";
+			$strgroup = " group by activity.aid ";
 		}
-		$strplue = "distinct activity.aid as aid, activity.name as name,activity.start_time as start_time,
+		$strplue = "count(*) as num,activity.aid as aid, activity.name as name,activity.start_time as start_time,
 					activity.end_time as end_time,activity.location as location,
 					activity.type_id as type_id,activity.leader_id as leader_id,
-					activity.care_num as care_num, activity.care_num as care_num";
+					activity.care_num as care_num, activity.care_num as care_num,
+					user.uname as uname, user.rrid as rrid";
 		$strTime = "end_time>=NOW()";
 		if($typeId==0)
 		{
 			switch($orderBy)
 			{
 			case null:
-				$sqlstr = "select $strplue from activity,caremember where $strTime $strIn;";
+				$sqlstr = "select $strplue from activity,caremember,user where user.uid=activity.leader_id and $strTime $strIn $strgroup ;";
 				break;
 			case "time":
-				$sqlstr = "select $strplue from activity,caremember where $strTime $strIn order by aid desc;";
+				$sqlstr = "select $strplue from activity,caremember,user where user.uid=activity.leader_id and $strTime $strIn $strgroup order by aid desc;";
 				break;
 			case "care_num":
-				$sqlstr = "select $strplue from activity,caremember where $strTime $strIn order  by order_num desc where $strTime;";
+				$sqlstr = "select $strplue from activity,caremember,user where user.uid=activity.leader_id and $strTime $strIn $strgroup order  by order_num desc where $strTime;";
 				break;
 			case "join_num":
-				$sqlstr = "select $strplue from activity,caremember where $strTime $strIn order by _num desc;";
+				$sqlstr = "select $strplue from activity,caremember,user where user.uid=activity.leader_id and $strTime $strIn $strgroup order by _num desc;";
 				break;
 			default:
-				$sqlstr = "select $strplue from activity,caremember where $strTime $strIn;";
+				$sqlstr = "select $strplue from activity,caremember,user where user.uid=activity.leader_id and $strTime $strIn $strgroup ;";
 				break;
 			}
 		}
@@ -309,25 +357,25 @@
 			switch($orderBy)
 			{
 				case null:
-					$sqlstr = "select $strplue from activity,caremember where type_id=$typeId and $strTime $strIn;";
+					$sqlstr = "select $strplue from activity,caremember,user where user.uid=activity.leader_id and type_id=$typeId and $strTime $strIn $strgroup ;";
 					break;
 				case "time":
-					$sqlstr = "select $strplue from activity,caremember where type_id=$typeId  and $strTime  $strIn order by aid desc;";
+					$sqlstr = "select $strplue from activity,caremember,user where user.uid=activity.leader_id and type_id=$typeId  and $strTime  $strIn $strgroup order by aid desc;";
 					break;
 				case "care_num":
-					$sqlstr = "select $strplue from activity,caremember where type_id=$typeId  and $strTime  $strIn order by order_num desc;";
+					$sqlstr = "select $strplue from activity,caremember,user where user.uid=activity.leader_id and type_id=$typeId  and $strTime  $strIn $strgroup order by order_num desc;";
 					break;
 				case "join_num":
-					$sqlstr = "select $strplue from activity,caremember where type_id=$typeId  and $strTime  $strIn order by _num desc;";
+					$sqlstr = "select $strplue from activity,caremember,user where user.uid=activity.leader_id and type_id=$typeId  and $strTime  $strIn $strgroup order by _num desc;";
 					break;
 				default:
-					$sqlstr = "select $strplue from activity,caremember where type_id=$typeId  and $strTime $strIn;";
+					$sqlstr = "select $strplue from activity,caremember,user where user.uid=activity.leader_id type_id=$typeId  and $strTime $strIn $strgroup ;";
 					break;
 			}
 			
 		}
 		//echo $sqlstr;
-		echo $sqlstr;
+		//echo $sqlstr;
 		$result = mysql_query($sqlstr);
 		$rows = mysql_num_rows($result);
 		if($rows==0)
@@ -345,6 +393,7 @@
 	function getActivityListByJoinFriends($typeId,$orderBy,$uidList)
 	{
 		$strIn="";
+		$strgroup="";
 		if($uidList!=null)
 		{	
 			$strIn="and activity.aid=joinmember.aid and joinmember.uid in (";
@@ -354,30 +403,32 @@
 				$strIn = $strIn.",'$uidList[$i]'";
 			}
 			$strIn = $strIn.")";
+			$strgroup = " group by activity.aid ";
 		}
-		$strplue = "distinct activity.aid as aid, activity.name as name,activity.start_time as start_time,
+		$strplue = "count(*) as num,activity.aid as aid, activity.name as name,activity.start_time as start_time,
 					activity.end_time as end_time,activity.location as location,
 					activity.type_id as type_id,activity.leader_id as leader_id,
-					activity.care_num as care_num, activity.join_num as join_num";
+					activity.care_num as care_num, activity.join_num as join_num,
+					user.rrid as rrid,user.uanme as uname";
 		$strTime = "end_time>=NOW()";
 		if($typeId==0)
 		{
 			switch($orderBy)
 			{
 			case null:
-				$sqlstr = "select $strplue from activity,joinmember where $strTime $strIn;";
+				$sqlstr = "select $strplue from activity,joinmember,user where user.uid=activity.leader_id and $strTime $strIn $strgroup;";
 				break;
 			case "time":
-				$sqlstr = "select $strplue from activity,joinmember where $strTime $strIn order by aid desc;";
+				$sqlstr = "select $strplue from activity,joinmember,user where user.uid=activity.leader_id and $strTime $strIn $strgroup order by aid desc; ";
 				break;
 			case "care_num":
-				$sqlstr = "select $strplue from activity,joinmember where $strTime $strIn order  by order_num desc where $strTime;";
+				$sqlstr = "select $strplue from activity,joinmember,user where user.uid=activity.leader_id and $strTime $strIn $strgroup order  by order_num desc;";
 				break;
 			case "join_num":
-				$sqlstr = "select $strplue from activity,joinmember where $strTime $strIn order by join_num desc;";
+				$sqlstr = "select $strplue from activity,joinmember,user where user.uid=activity.leader_id and $strTime $strIn $strgroup order by join_num desc;";
 				break;
 			default:
-				$sqlstr = "select $strplue from activity,joinmember where $strTime $strIn;";
+				$sqlstr = "select $strplue from activity,joinmember,user where user.uid=activity.leader_id and $strTime $strIn $strgroup;";
 				break;
 			}
 		}
@@ -386,25 +437,25 @@
 			switch($orderBy)
 			{
 				case null:
-					$sqlstr = "select $strplue from activity,joinmember where type_id=$typeId and $strTime $strIn;";
+					$sqlstr = "select $strplue from activity,joinmember,user where user.uid=activity.leader_id and type_id=$typeId and $strTime $strIn $strgroup;";
 					break;
 				case "time":
-					$sqlstr = "select $strplue from activity,joinmember where type_id=$typeId  and $strTime  $strIn order by aid desc;";
+					$sqlstr = "select $strplue from activity,joinmember,user where user.uid=activity.leader_id and type_id=$typeId  and $strTime  $strIn $strgroup order by aid desc;";
 					break;
 				case "care_num":
-					$sqlstr = "select $strplue from activity,joinmember where type_id=$typeId  and $strTime  $strIn order by order_num desc;";
+					$sqlstr = "select $strplue from activity,joinmember,user where user.uid=activity.leader_id and type_id=$typeId  and $strTime  $strIn $strgroup order by order_num desc;";
 					break;
 				case "join_num":
-					$sqlstr = "select $strplue from activity,joinmember where type_id=$typeId  and $strTime  $strIn order by join_num desc;";
+					$sqlstr = "select $strplue from activity,joinmember,user where user.uid=activity.leader_id and type_id=$typeId  and $strTime  $strIn $strgroup order by join_num desc;" ;
 					break;
 				default:
-					$sqlstr = "select $strplue from activity,joinmember where type_id=$typeId  and $strTime $strIn;";
+					$sqlstr = "select $strplue from activity,joinmember,user where user.uid=activity.leader_id and type_id=$typeId  and $strTime $strIn $strgroup;";
 					break;
 			}
 			
 		}
 		//echo $sqlstr;
-		echo $sqlstr;
+		//echo $sqlstr;
 		$result = mysql_query($sqlstr);
 		$rows = mysql_num_rows($result);
 		if($rows==0)
@@ -423,10 +474,18 @@
 	 * insert the new activity 
 	 * if failed return null
 	 */
-	function insert_Activity($name,$start_time,$end_time,$location,$type_id,$description,$leader_id)
+	function insert_Activity($name,$start_time,$end_time,$location,$type_id,$description,$leader_id,$pic_id)
 	{
-		$sqlstr = "insert into activity(name, start_time, end_time,location,type_id,description,leader_id) 
-		values('$name','$start_time','$end_time','$location','$type_id','$description','$leader_id');";
+		$name= mysql_real_escape_string($name);
+		$start_time = mysql_real_escape_string($start_time);
+		$end_time =  mysql_real_escape_string($end_time);
+		$location =  mysql_real_escape_string($location);
+		$type_id =  mysql_real_escape_string($type_id);
+		$description =  mysql_real_escape_string($description);
+		$leader_id = mysql_real_escape_string($leader_id);
+		$pic_id = mysql_real_escape_string($pic_id); 
+		$sqlstr = "insert into activity(name, start_time, end_time,location,type_id,description,leader_id,pic_id) 
+		values('$name','$start_time','$end_time','$location','$type_id','$description','$leader_id','$pic_id');";
 		//echo $sqlstr;
 		$result = mysql_query($sqlstr);
 		if($result==false)
@@ -564,7 +623,7 @@
 	 */
 	function get_CommentList($aid)
 	{
-		$sqlstr = "select * from comment where aid='$aid';";
+		$sqlstr = "select * from comment,user where aid='$aid' and user.uid=comment.uid;";
 		$result = mysql_query($sqlstr);
 		$rows = mysql_num_rows($result);
 		$comments=array();
@@ -588,6 +647,38 @@
 		}
 		$cid = mysql_insert_id();
 		return $cid;
+	}
+	
+	function transDate($dateStrStart,$dateStrEnd)
+	{
+		$week =array('周日','周一','周二','周三','周四','周五','周六');
+		$strStar="";
+		$strEnd="";
+		$dateStart = strtotime($dateStrStart);
+		$dateEnd = strtotime($dateStrEnd);
+		if(date("Y-m-d",$dateStart)==date("Y-m-d",$dateEnd))
+		{
+			$strDate = date("n",$dateStrStart)."月".date("d",$dateStart)."日 ";
+			$strStartTime = date("g",$dateStart).":".(date("i",$dateStart)+1)." ".date("A",$dateStart);
+			$strEndTime = date("g",$dateEnd).":".(date("i",$dateEnd)+1)." ".date("A",$dateStart);
+			$result = $strDate." ".$strStartTime." - ".$strEndTime;
+		}
+		else
+		{
+			$strStart = date("n",$dateStart)."月".date("d",$dateStart)."日  ".$week[date('w',$dateStart)];
+			$strEnd = date("n",$dateEnd)."月".date("d",$dateEnd)."日  ".$week[date('w',$dateEnd)];
+			$result = $strStart." - ".$strEnd;
+		}
+		return $result;
+	}
+	
+	function getDateTime($dateStr)
+	{
+		$date = strtotime($dateStr);
+		$strDate =date("n",$date)."月".date("d",$date)."日  ".$week[date('w',$date)];
+		$strTime =  date("g",$date).":".(date("i",$date))." ".date("A",$date);
+		$result = $strDate." ".$strTime;
+		return $result;
 	}
 ?>
 
