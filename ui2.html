@@ -4,7 +4,29 @@
         <title>Hello</title>
         <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
         <meta property="xn:app_id" content="172440" />
-        <link style="text/css" rel="stylesheet" href="style2.css" />
+        <script type="text/javascript" src="js/jquery-1.6.4.min.js" ></script>
+        <link style="text/css" rel="stylesheet" href="css/style2.css" />
+        
+        <script type="text/javascript">
+        	uid_list = false;
+        	$(function(){
+        		load_social();
+        	});
+        	function get_uid_list(){
+        		$.get("get_uid.php",function(data){
+        			console.log(data);
+        			uid_list=true;
+        			load_social();
+        		});
+        	}
+        	function load_social(){
+        		if(!uid_list){
+        			get_uid_list(load_social);
+        			return;
+        		}
+        		//$.post("");
+        	}
+        </script>
     </head>
     <body>
 

@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+<head>
+<title>CallBack</title>
+</head>
+<body>
+    <script type="text/javascript">
+        var url = window.location.href;
+
+        var token = url.match(/access_token=([^&]+)/);
+        if(!token)
+            window.parent.error();
+        else{
+            window.parent.pushToken(decodeURIComponent(token[1]));
+        }
+        
+    </script>
+</body>
+</html>

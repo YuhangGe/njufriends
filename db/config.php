@@ -1,7 +1,7 @@
 <?php 
 	$dbhost ="localhost";
-	$dbuser="root";
-	$dbpassword="css";
+	$dbuser="nju";
+	$dbpassword="nju";
 	$dbdatabase="njufriends";
 	
 	$config_webName="CineForums";
