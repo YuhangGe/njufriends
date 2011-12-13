@@ -11,13 +11,13 @@
     
     function getUser(){
         global $client,$user;
-        //Èç¹ûÊý¾Ý¿âÖÐÓÐÓÃ»§
+        //å¦‚æžœæ•°æ®åº“ä¸­æœ‰ç”¨æˆ·
         /*
          * $user['id'] = get_uid();
          * */
-        //·µ»Ø
+        //è¿”å›ž
         
-        //Èç¹ûÊý¾Ý¿âÖÐÃ»ÓÐÓÃ»§ÐÅÏ¢
+        //å¦‚æžœæ•°æ®åº“ä¸­æ²¡æœ‰ç”¨æˆ·ä¿¡æ¯
         
          $r_u = $client->POST('users.getInfo',array($user['rrid'],'name,tinyurl'));
          var_dump($r_u );
@@ -30,10 +30,13 @@
 ?>
 <!doctype html>
 <html>
-    <head></head>
+    <head>
+    	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    </head>
     <body>
        <?php
         var_dump($user);
        ?>
+       é˜¿æ–¯é¡¿é£ž
     </body>
 </html>
