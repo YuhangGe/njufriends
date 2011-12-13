@@ -1,0 +1,133 @@
+* {
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+    font-size: 14px;
+	font-family: "宋体";
+}
+#frame{
+    width: 800px;
+    border: 1px solid blue;
+    
+}
+a{
+	text-decoration: none;
+	color: #005eac;
+}
+option{
+	padding: 1px 3px 1px;
+}
+body{
+    
+}
+
+#main h2{
+	font-size: 25px;
+	color: #4a4a4a;
+	margin-bottom: 20px;
+}
+
+#main form{
+	padding:0px 10px;
+}
+
+#logo{
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+#foot{
+    margin-top: 20px;
+    text-align:center;
+}
+
+.tip {
+	display: none;
+	color: red;
+	font-size: 12px;
+}
+.f_row{
+	margin-bottom: 10px;
+}
+
+.f_row input, .f_row textarea, .f_row select{
+	padding:2px;
+	border: 1px solid #cee1ee;
+	border-radius: 2px;
+}
+.f_row input:focus, .f_row textarea:focus, .f_row select:focus{
+	border-color: #005eac;
+}
+
+.f_row iframe{
+	width: 120px;
+	height: 35px;
+	display: inline-block;
+	overflow: hidden;
+	position: relative;
+	top: 13px;
+}
+.f_row p{
+	color: gray;
+	margin: 6px 35px;
+	font-size: 12px;
+}
+.r_l,.r_m,.r_r{
+	float: left;
+}
+.r_m{
+	margin-left: 8px;
+}
+.r_r{
+	margin-left: 8px;
+}
+
+#btn_ok,#btn_cl{
+	border: 1px solid #cee1ee;
+	font-size: 16px;
+	padding: 6px 10px;
+	background: #005eac;
+	color: white;
+	border-radius: 3px;
+	margin: 15px 3px;
+}
+.f_row_btn{
+	margin-top: 30px;
+	padding-left: 30px;
+}
+.clear{
+    clear: both;
+}
+#i_title{
+	width: 450px;
+}
+#i_type{
+	width: 100px;
+}
+#i_addr{
+	width: 450px;
+}
+#i_date_f, #i_date_t {
+	padding-right: 18px;
+	width: 100px;
+}
+#i_time_f, #i_time_t {
+	width: 80px;
+}
+.f_row_time div{
+	display: inline-block;
+	position: relative;
+	margin-right: 3px;
+}
+
+.f_row_time div img{
+	position:absolute;
+	width: 15px;
+	height: 15px;
+	right: 3px;
+	top: 3px;
+}
+
+#img_view img{
+	width: 120px;
+	margin:10px 35px;
+}

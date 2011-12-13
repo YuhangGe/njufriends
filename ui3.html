@@ -1,39 +1,241 @@
 <!doctype html>
 <html>
-    <head>
-        <title>Hello</title>
-        <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-        <meta property="xn:app_id" content="172440" />
-        <link style="text/css" rel="stylesheet" href="style3.css" />
-    </head>
-    <body>
-       <div id="frame">
-        <div id="logo">
-            呼朋唤友
-        </div>
-        <div id="main">
-            <h3>
-                创建活动
-            </h3>
-            <div>
-                <frame>
-                    <div>标题<input /></div>
-                    <div>类型<select>
-                        <option name="a">音乐电影</option>
-                    </select></div>
-                    <div>时间<input /></div>
-                    <div>地点<input /></div>
-                    <div>介绍<textarea rows="10" cols="60"></textarea></div>
-                    <div>
-                        <a href="#">发布，开始呼朋唤友</a>
-                        <a href="#">取消，返回首页</a>
-                    </div>
-                </frame>
-            </div>
-        </div>
-        <div id="foot">
-            呼朋唤友©版权所有
-        </div>
-       </div>
-    </body>
+	<head>
+		<title>Hello</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+		<script type="text/javascript" src="js/jquery-1.6.4.min.js"></script>
+		<script type="text/javascript" src="js/jquery.datepick.js"></script>
+		<link style="text/css" rel="stylesheet" href="css/nju.datepick.css" />
+		<link style="text/css" rel="stylesheet" href="css/style3.css" />
+		<script type="text/javascript">
+			$(function() {
+				$('#i_date_f').attr("readonly", true).datepick();
+				$('#i_date_t').attr("readonly", true).datepick();
+
+				
+				$("#i_title").blur(NJUCheck.title);
+				$("#i_addr").blur(NJUCheck.address).focus(NJUCheck.time);
+				$("#i_detail").blur(NJUCheck.detail);
+				$("#i_type").change(NJUCheck.type);
+				
+				
+				
+			});
+			
+			var NJUCheck = {
+				title : function() {
+					var v = $.trim($("#i_title").val());
+					if(v == "") {
+						$("#t_title").show();
+						return false;
+					} else {
+						$("#t_title").hide();
+						return true;
+					}
+	
+				},
+				address : function(){
+					var v = $.trim($("#i_addr").val());
+					if(v == "") {
+						$("#t_addr").show();
+						return false;
+					} else {
+						$("#t_addr").hide();
+						return true;
+					}
+				},
+				detail : function(){
+					var v = $.trim($("#i_detail").val());
+					if(v == "") {
+						$("#t_detail").show();
+						return false;
+					} else {
+						$("#t_detail").hide();
+						return true;
+					}
+				},
+				type : function(){
+					var v = $("#i_type")[0].selectedIndex;
+					if( v === 0) {
+						$("#t_type").show();
+						return false;
+					} else {
+						$("#hi_type").val(v);
+						$("#t_type").hide();
+						return true;
+					}
+				},
+				time : function(){
+					var t = NJUCheck._time();
+					if(t.pass){
+						$("#hi_time_from").val(t.from);
+						$("#hi_time_to").val(t.to);
+						$("#t_time").hide();
+						return true;
+					}else{
+						$("#t_time").html(t.error).show();
+						return false;
+					}
+				},
+				_time : function(){
+					var d_f = $("#i_date_f").val(),
+						d_t = $("#i_date_t").val(),
+						t_f = $("#i_time_f").val(),
+						t_t = $("#i_time_t").val();
+					if(d_f=="")
+						return {pass: false,error: '请输入活动开始日期'}
+					if(d_t == "")
+						return {pass:false, error:'请输入活动结束日期'};
+					d_f += " "+t_f;
+					d_t += " "+t_t;
+					var date_f = Date.parse(d_f.replace(/-/g,"/"));
+					var date_t = Date.parse(d_t.replace(/-/g,"/"));
+					var now = new Date().getTime();
+					if(now > date_f)
+						return {pass: false, error:'开始时间已经过期'};
+					else if(now> date_t)
+						return {pass: false, error: '结束时间已经过期'};
+					else if(date_t < date_f)
+						return {pass: false, error: '结束时间在开始时间之前！？'};
+					else
+						return {pass: true, value: {
+							from : d_f,
+							to : d_t
+						}};
+				},
+				
+			}
+			function submit() {
+				if(NJUCheck.title() 
+					&& NJUCheck.type()
+					&& NJUCheck.time()
+					&& NJUCheck.address()
+					&& NJUCheck.detail()){
+						$('#form_activity').submit();
+					}
+			}
+
+			function upload_callback(success, rtn) {
+				if(success) {
+					$("#img_view").html("<img src='" + rtn.url + "' />");
+					$("#i_image").val(rtn.id);
+					$("#tip_upload").html("上传成功！").css({
+						color : "#005eac"
+					});
+				} else {
+					$("#tip_upload").html("上传失败，请重试！").css({
+						color : "red"
+					});
+					$("#img_view").html("");
+				}
+			}
+
+			function upload_begin() {
+				$("#tip_upload").html("正在上传中……").css({
+					color : "#005eac"
+				}).show();
+			}
+
+			function cancel() {
+				if(confirm("确认放弃编辑本次活动？")) {
+					window.location.href = "index.php";
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<div id="logo">
+			呼朋唤友
+		</div>
+		<div id="main">
+			<h2> 创建活动 </h2>
+			<div>
+				<form id="form_activity" method="post">
+					<div class="f_row">
+						<label>标题</label>
+						<input name="title" id="i_title"/>
+						<span class="tip" id="t_title">请输入标题</span>
+					</div>
+					<div class="f_row">
+						<label>类型</label>
+						<select id="i_type">
+							<option >选择类别</option>
+							<option name="a">音乐电影</option>
+							<option name="a">音乐电影</option>
+							<option name="a">音乐电影</option>
+						</select>
+						<span class="tip" id="t_type">请选择一个类型</span>
+						<input type="hidden" name="type" id="hi_type" />
+					</div>
+					<div class="f_row f_row_time">
+						<label>时间</label>
+						<div>
+							<input id="i_date_f" />
+							<img src="images/calendar.gif" />
+						</div>
+						<div>
+							<select id="i_time_f" >
+								<option value="00:00">00:00</option>
+								<option value="00:30">00:30</option>
+								<option value="01:00">01:00</option>
+							</select>
+						</div>
+						至
+						<div>
+							<input id="i_date_t" />
+							<img src="images/calendar.gif" />
+						</div>
+						<div>
+							<select id="i_time_t" >
+								<option value="00:00">00:00</option>
+								<option value="00:30">00:30</option>
+								<option value="01:00">01:00</option>
+							</select>
+						</div>
+						<span class="tip" id="t_time">
+							请输入时间
+						</span>
+						<input type="hidden" name="time_from"  id="hi_time_from"/>
+						<input type="hidden" name="time_to" id="hi_time_to" />
+					</div>
+					<div class="f_row">
+						<label>地点</label>
+						<input id="i_addr" name="address"/>
+						<span class="tip" id="t_addr">请输入地点</span>
+					</div>
+					<div class="f_row">
+						<div class="r_l">
+							<label>详情</label>
+						</div>
+						<div class="r_m">
+							<textarea id="i_detail" name="detail" rows="10" cols="60"></textarea>
+						</div>
+						<div class="r_r">
+							<span class="tip" id="t_detail">请输入详情</span>
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="f_row">
+						<label>海报</label>
+						<iframe src="upload_img.php" frameborder="0"></iframe>
+						<span style="display: inline-block;" id="tip_upload"></span>
+						<p>
+							支持png、jpg、gif、bmp格式，文件不超过3M
+						</p>
+						<div id="img_view">
+							<!-- <img src="http://hdn.xnimg.cn/photos/hdn421/20111126/2040/h_main_2zHh_6f930001ad782f76.jpg" /> -->
+						</div>
+						<input type="hidden" name="image" id="i_image" />
+					</div>
+					<div class="f_row f_row_btn">
+						<a id="btn_ok" href="javascript: submit();">发布，开始呼朋唤友</a>
+						<a id="btn_cl" href="javascript: cancel();">取消，返回首页</a>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div id="foot">
+			呼朋唤友©版权所有
+		</div>
+	</body>
 </html>
