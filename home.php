@@ -4,15 +4,25 @@
 	$types = get_TypeList();
 	
 	//var_dump($_SESSION);
+	$order_by = "time";
+	if(!empty($_REQUEST['order']))
+		$order_by=$_REQUEST['order'];
+	$type_id = 0;
+	if(!empty($_REQUEST['type']))
+		$type_id = $_REQUEST['type'];
 	
 	if(!empty($_SESSION['u_list']))
 	{
 		$rridList = explode(",",$_SESSION['u_list']);
-		$activities = getActivityListByCareFriends($_REQUEST['type_id'],$_REQUEST['orderBy'],$rridList);
+		$activities = getActivityListByCareFriends($type_id,$order_by,$rridList);
 	}
 	else
 	{
-		$activities = get_ActivityList($_REQUEST['type_id'],$_REQUEST['orderBy']);
+		$activities = get_ActivityList($type_id,$order_by);
+	}
+	
+	function get_href($tid,$ord){
+		return "home.php?type=$tid&order=$ord";
 	}
 ?>
 <!doctype html>
@@ -30,23 +40,18 @@
         <div id="main">
             <div id="left">
             	<ul>
-            		<li><a href="orderBy='time'">时间</a></li>
-            		<li><a href="orderBy='join_num'" class="cur_sort">热门度</a></li>
-            		<li><a href="rridList='1,2,3'">好友参与</a></li>
+            		<li><a href="<?php echo get_href($type_id,"time");?>">时间</a></li>
+            		<li><a href="<?php echo get_href($type_id,"join_number");?>">热门度</a></li>
+            		<li><a href="<?php echo get_href($type_id,"time");?>">好友参与</a></li>
             	</ul>
                 <ul>
-                    <li><a href="type_id=0">所有类别</a></li>
+                    <li><a href="<?php echo get_href(0,$order_by);?>" <?php echo ($type_id==0)?"class='cur_class'":"";?>>所有类别</a></li>
                     <?php 
                     	foreach($types as $type)
                     	{
-                    		if($type['type_id']==$_REQUEST['type_id'])
-                    		{
-                    			echo "<li><a href='type_id=".$type['type_id']."' class='cur_class'>".$type['tname']."</a></li>";
-                    		}
-                    		else
-                    		{
-                    			echo "<li><a href='type_id=".$type['type_id']."'>".$type['tname']."</a></li>";
-                    		}
+                    		$tid = $type['type_id'];
+							$t_href = get_href($tid,$order_by);
+							echo "<li><a href='$t_href' ".($tid==$type_id?"class='cur_class'":"").">".$type['tname']."</a></li>";
                     	}
                     ?>
                 </ul>
@@ -68,11 +73,11 @@
                     	?>
                     	</div>
                     	<div class="i-right">
-                    		<h3><a href="#"><?php echo $activity['name']?></a></h3>
+                    		<h3><a href="activity.php?aid=<?php echo $activity['aid'];?>"><?php echo $activity['name']?></a></h3>
 	                        <p>时间：<?php echo transDate($activity['start_time'],$activity['end_time']);?></p>
 	                        <p>地点：<?php echo $activity['location'];?></p>
 	                        <p>类型：<?php echo $activity['type_id']?></p>
-	                        <p>发起人：<a href="#"><?php echo $activity['uname']?></a></p>
+	                        <p>发起人：<a href="http://www.renren.com/profile.do?id=<?php echo $activity['rrid'];?>" target="_blank"><?php echo $activity['uname']?></a></p>
 	                        <p>共<?php echo $activity['join_num']?>人参加，<?php echo $activity['care_num']?>人关注；其中好友<?php if($activity['num']==null) echo 0;else echo $activity['num'];?>人参加</p>
                     	</div>
                         <div class="clear"></div>

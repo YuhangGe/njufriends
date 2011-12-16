@@ -98,10 +98,9 @@
 					else if(date_t < date_f)
 						return {pass: false, error: '结束时间在开始时间之前！？'};
 					else
-						return {pass: true, value: {
-							from : d_f,
+						return {pass: true, from : d_f,
 							to : d_t
-						}};
+						};
 				},
 				
 			}
