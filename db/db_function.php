@@ -695,6 +695,7 @@
 	
 	function getDateTime($dateStr)
 	{
+		$week =array('周日','周一','周二','周三','周四','周五','周六');
 		$date = strtotime($dateStr);
 		$strDate =date("n",$date)."月".date("d",$date)."日  ".$week[date('w',$date)];
 		$strTime =  date("g",$date).":".(date("i",$date))." ".date("A",$date);

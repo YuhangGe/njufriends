@@ -25,6 +25,7 @@
 		if($joinFriends==null || $careFriends==null)
 			$joinUsers = get_JoinUsers($aid,null,7);
 	}
+	$comments = get_CommentList($aid);
 ?>
 <!doctype html>
 <html>
