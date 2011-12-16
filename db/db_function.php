@@ -271,7 +271,7 @@
 					activity.end_time as end_time,activity.location as location,
 					activity.type_id as type_id,activity.leader_id as leader_id,
 					activity.care_num as care_num, activity.join_num as join_num,
-					user.rrid as rrid,user.uname as uname";
+					user.rrid as rrid,user.uname as uname,user.uid as uid";
 		$strTime = "end_time>=NOW()";
 		if($typeId==0)
 		{
@@ -351,7 +351,7 @@
 					activity.end_time as end_time,activity.location as location,
 					activity.type_id as type_id,activity.leader_id as leader_id,
 					activity.care_num as care_num, activity.care_num as care_num,
-					user.uname as uname, user.rrid as rrid";
+					user.uname as uname, user.rrid as rrid,user.uid as uid";
 		$strTime = "end_time>=NOW()";
 		if($typeId==0)
 		{
@@ -517,7 +517,7 @@
 		$result = doQuery($sqlstr);
 		if($result==false)
 		{
-			return array();
+			return null;
 		}
 		$aid = mysql_insert_id();
 		return $aid;
@@ -707,6 +707,34 @@
 		$strTime =  date("g",$date).":".(date("i",$date))." ".date("A",$date);
 		$result = $strDate." ".$strTime;
 		return $result;
+	}
+	
+	function insert_Post($url)
+	{
+		$strsql = "insert into post(url) values('$url');";
+		$result = doQuery($strsql);
+		if(!result)
+		{
+			return null;
+		}
+		else
+		{
+			return mysql_insert_id();
+		}
+	}
+	
+	function use_Post($pid)
+	{
+		$strsql = "update post set isused=1 where pid=$pid;";
+		$result = doQuery($strsql);
+		if(!result)
+		{
+			return null;
+		}
+		else
+		{
+			return true;
+		}
 	}
 ?>
 
