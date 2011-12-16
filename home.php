@@ -73,11 +73,11 @@
                     	?>
                     	</div>
                     	<div class="i-right">
-                    		<h3><a href="#"><?php echo $activity['name']?></a></h3>
+                    		<h3><a href="activity.php?aid=<?php echo $activity['aid'];?>"><?php echo $activity['name']?></a></h3>
 	                        <p>时间：<?php echo transDate($activity['start_time'],$activity['end_time']);?></p>
 	                        <p>地点：<?php echo $activity['location'];?></p>
 	                        <p>类型：<?php echo $activity['type_id']?></p>
-	                        <p>发起人：<a href="#"><?php echo $activity['uname']?></a></p>
+	                        <p>发起人：<a href="http://www.renren.com/profile.do?id=<?php echo $activity['rrid'];?>" target="_blank"><?php echo $activity['uname']?></a></p>
 	                        <p>共<?php echo $activity['join_num']?>人参加，<?php echo $activity['care_num']?>人关注；其中好友<?php if($activity['num']==null) echo 0;else echo $activity['num'];?>人参加</p>
                     	</div>
                         <div class="clear"></div>
