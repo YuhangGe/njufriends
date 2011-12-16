@@ -1,5 +1,5 @@
 <?php
-	@session_start();
+	session_start();
 	require("db/db_function.php");
 	$types = get_TypeList();
 	

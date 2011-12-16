@@ -76,7 +76,7 @@
 		{
 			$strLimit = "limit 0,$limitNum";
 		}
-		$sqlstr="select caremember.uid as uid,user.uname as uname,user.headurl as headurl from caremember,user where caremember.aid='$aid' and user.uid=caremember.uid $strIn $strLimit;";
+		$sqlstr="select caremember.uid as uid,user.uname as uname,user.headurl as headurl,user.rrid as rrid from caremember,user where caremember.aid='$aid' and user.uid=caremember.uid $strIn $strLimit;";
 		$result = doQuery($sqlstr);
 		//echo $sqlstr;
 		$rows = mysql_num_rows($result);
@@ -119,7 +119,7 @@
 		{
 			$strLimit = "limit 0,$limitNum";
 		}
-		$sqlstr="select joinmember.uid as uid,user.uname as uname,user.headurl as headurl from joinmember,user where joinmember.aid='$aid' and user.uid=joinmember.uid $strIn $strLimit;";
+		$sqlstr="select joinmember.uid as uid,user.uname as uname,user.headurl,as headurl,user.rrid as rrid from joinmember,user where joinmember.aid='$aid' and user.uid=joinmember.uid $strIn $strLimit;";
 		$result = doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
 		if($rows==0)
@@ -505,6 +505,10 @@
 		$description =  mysql_real_escape_string($description);
 		$leader_id = mysql_real_escape_string($leader_id);
 		$pic_id = mysql_real_escape_string($pic_id); 
+		if(strtotime($end_time))
+		{
+			strtotime($end_time)-strtotime(date())
+		}
 		$sqlstr = "insert into activity(name, start_time, end_time,location,type_id,description,leader_id,pic_id) 
 		values('$name','$start_time','$end_time','$location','$type_id','$description','$leader_id','$pic_id');";
 		//echo $sqlstr;
