@@ -4,6 +4,12 @@
 	mysql_select_db($dbdatabase,$db);
 	mysql_query("set names utf8");
 	
+	function doQuery($sqlstr)
+	{
+		$result = mysql_query($sqlstr);
+		return $result;
+	}
+	
 	/*
 	 * if the user with rrid exists
 	 * return the user's information
@@ -14,11 +20,11 @@
 	function get_UserByRRid($rrid)
 	{	
 		$sqlstr="select * from user where rrid='$rrid';";
-		$result = mysql_query($sqlstr);
+		$result = doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
 		if($rows==0)
 		{
-			return null;
+			return array();
 		}
 		else
 		{
@@ -30,11 +36,11 @@
 	function get_UserByUid($uid)
 	{
 	$sqlstr="select * from user where uid='$uid';";
-		$result = mysql_query($sqlstr);
+		$result = doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
 		if($rows==0)
 		{
-			return null;
+			return array();
 		}
 		else
 		{
@@ -71,12 +77,12 @@
 			$strLimit = "limit 0,$limitNum";
 		}
 		$sqlstr="select caremember.uid as uid,user.uname as uname,user.headurl as headurl from caremember,user where caremember.aid='$aid' and user.uid=caremember.uid $strIn $strLimit;";
-		$result = mysql_query($sqlstr);
+		$result = doQuery($sqlstr);
 		//echo $sqlstr;
 		$rows = mysql_num_rows($result);
 		if($rows==0)
 		{
-			return null;
+			return array();
 		}
 		$users=array();
 		while($user = mysql_fetch_assoc($result))
@@ -114,11 +120,11 @@
 			$strLimit = "limit 0,$limitNum";
 		}
 		$sqlstr="select joinmember.uid as uid,user.uname as uname,user.headurl as headurl from joinmember,user where joinmember.aid='$aid' and user.uid=joinmember.uid $strIn $strLimit;";
-		$result = mysql_query($sqlstr);
+		$result = doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
 		if($rows==0)
 		{
-			return null;
+			return array();
 		}
 		$users=array();
 		while($user = mysql_fetch_assoc($result))
@@ -135,11 +141,11 @@
 	function get_UserRRid($uid)
 	{
 		$sqlstr="select user.rrid from user where user.uid=$uid;";
-		$result = mysql_query($sqlstr);
+		$result = doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
 		if($rows==0)
 		{
-			return null;
+			return array();
 		}
 		$rrid = mysql_fetch_assoc($result);
 		return $rrid['rrid'];
@@ -152,22 +158,22 @@
 	function insert_User($rrid,$uname,$headurl)
 	{
 		$sqlstr = "select * from user where user.rrid='$rrid'";
-		$result = mysql_query($sqlstr);
+		$result = doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
 		if($rows!=0)
 		{
-			return null;
+			return array();
 		}
 		else
 		{
 			$sqlstr = "insert into user(rrid, uname, headurl) values('$rrid','$uname','$headurl');";
-			mysql_query($sqlstr);
+			doQuery($sqlstr);
 			$sqlstr = "select * from user where user.rrid='$rrid'";
-			$result = mysql_query($sqlstr);
+			$result = doQuery($sqlstr);
 			$rows = mysql_num_rows($result);
 			if($rows==0)
 			{
-				return null;
+				return array();
 			}
 			else
 			{
@@ -212,11 +218,11 @@
 			$sqlstr="select $strplue from activity,user where activity.aid=$aid;";
 		}
 		//echo $sqlstr;
-		$result =mysql_query($sqlstr);
+		$result =doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
 		if($rows==0)
 		{
-			return null;
+			return array();
 		}
 		$activity = mysql_fetch_assoc($result);
 		return $activity;
@@ -240,7 +246,7 @@
 		}
 		$sqlstr = "select uid from user $strIn";
 		//echo $sqlstr;
-		$result = mysql_query($sqlstr);
+		$result = doQuery($sqlstr);
 		$num = mysql_num_rows($result);
 		if($num==0)
 		{
@@ -311,11 +317,11 @@
 		}
 		//echo $sqlstr;
 		//echo $sqlstr;
-		$result = mysql_query($sqlstr);
+		$result = doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
 		if($rows==0)
 		{
-			return null;
+			return array();
 		}	
 		$activities=array();
 		while($activity = mysql_fetch_assoc($result))
@@ -391,11 +397,11 @@
 		}
 		//echo $sqlstr;
 		//echo $sqlstr;
-		$result = mysql_query($sqlstr);
+		$result = doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
 		if($rows==0)
 		{
-			return null;
+			return array();
 		}	
 		$activities=array();
 		while($activity = mysql_fetch_assoc($result))
@@ -471,11 +477,11 @@
 		}
 		//echo $sqlstr;
 		//echo $sqlstr;
-		$result = mysql_query($sqlstr);
+		$result = doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
 		if($rows==0)
 		{
-			return null;
+			return array();
 		}	
 		$activities=array();
 		while($activity = mysql_fetch_assoc($result))
@@ -502,10 +508,10 @@
 		$sqlstr = "insert into activity(name, start_time, end_time,location,type_id,description,leader_id,pic_id) 
 		values('$name','$start_time','$end_time','$location','$type_id','$description','$leader_id','$pic_id');";
 		//echo $sqlstr;
-		$result = mysql_query($sqlstr);
+		$result = doQuery($sqlstr);
 		if($result==false)
 		{
-			return null;
+			return array();
 		}
 		$aid = mysql_insert_id();
 		return $aid;
@@ -518,11 +524,11 @@
 	function get_TypeList()
 	{
 		$sqlstr = "select * from type;";
-		$result = mysql_query($sqlstr);
+		$result = doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
 		if($rows==0)
 		{
-			return null;
+			return array();
 		}
 		$types=array();
 		while($type = mysql_fetch_assoc($result))
@@ -541,19 +547,19 @@
 		$care_num=0;
 		//check if the user exists
 		$sqlstr = "select * from user where uid='$uid';";
-		$result = mysql_query($sqlstr);
+		$result =doQuery($sqlstr);
 		if(mysql_num_rows($result)!=1)
 		{
-			echo "no user";
-			return null;
+			//echo "no user";
+			return array();
 		}
 		//check if the activity exists
 		$sqlstr = "select * from activity where aid='$aid';";
-		$result = mysql_query($sqlstr);
+		$result = doQuery($sqlstr);
 		if(mysql_num_rows($result)!=1)
 		{
-			echo "no activity";
-			return null;
+			//echo "no activity";
+			return array();
 		}
 		else
 		{
@@ -562,23 +568,23 @@
 		}
 		//check if the user has cares the activity
 		$sqlstr = "select * from caremember where aid='$aid' and uid='$uid';";
-		$result = mysql_query($sqlstr);
+		$result =doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
 		//echo $sqlstr;
 		if($rows!=0)
 		{
 			echo "has cared";
-			return null;
+			return array();
 		}
 		
 		$sqlstr = "insert into caremember(aid,uid) values('$aid','$uid');";
-		if(mysql_query($sqlstr)!=true)
+		if(doQuery($sqlstr)!=true)
 		{
-			return null;
+			return array();
 		}
 		$care_num = $care_num +1;
 		$sqlstr = "update activity set care_num='$care_num' where aid='$aid';";
-		mysql_query($sqlstr);
+		doQuery($sqlstr);
 		return true;
 	}
 	
@@ -591,19 +597,19 @@
 		$join_num=0;
 		//check if the user exists
 		$sqlstr = "select * from user where uid='$uid';";
-		$result = mysql_query($sqlstr);
+		$result = doQuery($sqlstr);
 		if(mysql_num_rows($result)!=1)
 		{
 			echo "no user";
-			return null;
+			return array();
 		}
 		//check if the activity exists
 		$sqlstr = "select * from activity where aid='$aid';";
-		$result = mysql_query($sqlstr);
+		$result = doQuery($sqlstr);
 		if(mysql_num_rows($result)!=1)
 		{
 			echo "no activity";
-			return null;
+			return array();
 		}
 		else
 		{
@@ -612,23 +618,23 @@
 		}
 		//check if the user has joins into the activity
 		$sqlstr = "select * from joinmember where aid='$aid' and uid='$uid';";
-		$result = mysql_query($sqlstr);
+		$result = doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
 		//echo $sqlstr;
 		if($rows!=0)
 		{
-			echo "has cared";
-			return null;
+			echo "has joined";
+			return array();
 		}
 		
 		$sqlstr = "insert into joinmember(aid,uid) values('$aid','$uid');";
-		if(mysql_query($sqlstr)!=true)
+		if(doQuery($sqlstr)!=true)
 		{
-			return null;
+			return array();
 		}
 		$join_num = $join_num +1;
 		$sqlstr = "update activity set join_num='$join_num' where aid='$aid';";
-		mysql_query($sqlstr);
+		doQuery($sqlstr);
 		return true;
 	}
 	
@@ -639,7 +645,7 @@
 	function get_CommentList($aid)
 	{
 		$sqlstr = "select * from comment,user where aid='$aid' and user.uid=comment.uid;";
-		$result = mysql_query($sqlstr);
+		$result = doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
 		$comments=array();
 		while($comment = mysql_fetch_assoc($result))
@@ -656,9 +662,9 @@
 	function insert_Comment($aid,$uid,$content,$time)
 	{
 		$sqlstr = "insert into comment(aid,uid,content,time) values('$aid','$uid','$content','$time');";
-		if(mysql_query($sqlstr)!=true)
+		if(doQuery($sqlstr)!=true)
 		{
-			return null;
+			return array();
 		}
 		$cid = mysql_insert_id();
 		return $cid;
