@@ -6,7 +6,7 @@
 	
 	function doQuery($sqlstr)
 	{
-		//echo $sqlstr;
+		echo $sqlstr;
 		$result = mysql_query($sqlstr);
 		return $result;
 	}
@@ -194,7 +194,7 @@
 		$strgroup="";
 		if($uidList!=null)
 		{
-			$strIn="and activity.aid=joinmember.aid and joinmember.uid in (";
+			$strIn="and post.pid=activity.pic_id and activity.aid=joinmember.aid and joinmember.uid in (";
 			$strIn = $strIn."'$uidList[0]'";
 			for($i=1;$i<count($uidList);$i++)
 			{
@@ -205,18 +205,18 @@
 			$strplue = "count(*) as num,activity.aid as aid, activity.name as name,activity.start_time as start_time,
 						activity.end_time as end_time,activity.location as location,
 						activity.type_id as type_id,activity.leader_id as leader_id,
-						activity.care_num as care_num, activity.join_num as join_num,
+						activity.care_num as care_num, activity.join_num as join_num,post.url as url,
 						user.uname as uname,activity.description as description,user.uid as uid, user.rrid as rrid";
-			$sqlstr="select $strplue from activity,user,joinmember where activity.aid=$aid $strIn $strgroup;";
+			$sqlstr="select $strplue from activity,user,joinmember,post where post.pid=activity.pic_id and activity.aid=$aid $strIn $strgroup;";
 		}
 		else
 		{
 			$strplue = "activity.aid as aid, activity.name as name,activity.start_time as start_time,
 						activity.end_time as end_time,activity.location as location,
 						activity.type_id as type_id,activity.leader_id as leader_id,
-						activity.care_num as care_num, activity.join_num as join_num,
+						activity.care_num as care_num, activity.join_num as join_num,post.url as url,
 						user.uname as uname,activity.description as description,user.uid as uid, user.rrid as rrid";
-			$sqlstr="select $strplue from activity,user where activity.aid=$aid;";
+			$sqlstr="select $strplue from activity,user,post where activity.pic_id=post.pid and activity.aid=$aid;";
 		}
 		//echo $sqlstr;
 		$result =doQuery($sqlstr);
@@ -271,26 +271,26 @@
 					activity.end_time as end_time,activity.location as location,
 					activity.type_id as type_id,activity.leader_id as leader_id,
 					activity.care_num as care_num, activity.join_num as join_num,
-					user.rrid as rrid,user.uname as uname,user.uid as uid";
+					user.rrid as rrid,user.uname as uname,user.uid as uid,post.url as url";
 		$strTime = "end_time>=NOW()";
 		if($typeId==0)
 		{
 			switch($orderBy)
 			{
 			case null:
-				$sqlstr = "select $strplue from activity,user where activity.leader_id=user.uid and $strTime;";
+				$sqlstr = "select $strplue from activity,user,post where post.pid=activity.pic_id and activity.leader_id=user.uid and $strTime;";
 				break;
 			case "time":
-				$sqlstr = "select $strplue from activity,user where activity.leader_id=user.uid and $strTime order by aid desc;";
+				$sqlstr = "select $strplue from activity,user,post where post.pid=activity.pic_id and activity.leader_id=user.uid and $strTime order by aid desc;";
 				break;
 			case "care_num":
-				$sqlstr = "select $strplue from activity,user where activity.leader_id=user.uid and $strTime order  by order_num desc where $strTime;";
+				$sqlstr = "select $strplue from activity,user,post where post.pid=activity.pic_id and activity.leader_id=user.uid and $strTime order  by order_num desc where $strTime;";
 				break;
 			case "join_num":
-				$sqlstr = "select $strplue from activity,user where activity.leader_id=user.uid and $strTimeorder by join_num desc;";
+				$sqlstr = "select $strplue from activity,user,post where post.pid=activity.pic_id and activity.leader_id=user.uid and $strTimeorder by join_num desc;";
 				break;
 			default:
-				$sqlstr = "select $strplue from activity,user where activity.leader_id=user.uid and $strTime;";
+				$sqlstr = "select $strplue from activity,user,post where post.pid=activity.pic_id and activity.leader_id=user.uid and $strTime;";
 				break;
 			}
 		}
@@ -299,19 +299,19 @@
 			switch($orderBy)
 			{
 				case null:
-					$sqlstr = "select $strplue from activity,user where activity.leader_id=user.uid and type_id=$typeId and $strTime;";
+					$sqlstr = "select $strplue from activity,user,post where post.pid=activity.pic_id and activity.leader_id=user.uid and type_id=$typeId and $strTime;";
 					break;
 				case "time":
-					$sqlstr = "select $strplue from activity,user where activity.leader_id=user.uid and type_id=$typeId  and $strTime order by aid desc;";
+					$sqlstr = "select $strplue from activity,user,post where post.pid=activity.pic_id and  activity.leader_id=user.uid and type_id=$typeId  and $strTime order by aid desc;";
 					break;
 				case "care_num":
-					$sqlstr = "select $strplue from activity,user where activity.leader_id=user.uid and type_id=$typeId  and $strTime order by order_num desc;";
+					$sqlstr = "select $strplue from activity,user,post where post.pid=activity.pic_id and  activity.leader_id=user.uid and type_id=$typeId  and $strTime order by order_num desc;";
 					break;
 				case "join_num":
-					$sqlstr = "select $strplue from activity,user where activity.leader_id=user.uid and type_id=$typeId  and $strTime order by join_num desc;";
+					$sqlstr = "select $strplue from activity,user,post where post.pid=activity.pic_id and  activity.leader_id=user.uid and type_id=$typeId  and $strTime order by join_num desc;";
 					break;
 				default:
-					$sqlstr = "select $strplue from activity,user where activity.leader_id=user.uid and type_id=$typeId  and $strTime;";
+					$sqlstr = "select $strplue from activity,user,post where post.pid=activity.pic_id and activity.leader_id=user.uid and type_id=$typeId  and $strTime;";
 					break;
 			}
 			
@@ -351,26 +351,26 @@
 					activity.end_time as end_time,activity.location as location,
 					activity.type_id as type_id,activity.leader_id as leader_id,
 					activity.care_num as care_num, activity.care_num as care_num,
-					user.uname as uname, user.rrid as rrid,user.uid as uid";
+					user.uname as uname, user.rrid as rrid,user.uid as uid,post.url as url";
 		$strTime = "end_time>=NOW()";
 		if($typeId==0)
 		{
 			switch($orderBy)
 			{
 			case null:
-				$sqlstr = "select $strplue from activity,caremember,user where user.uid=activity.leader_id and $strTime $strIn $strgroup ;";
+				$sqlstr = "select $strplue from activity,caremember,user,post where post.pid=activity.pic_id and user.uid=activity.leader_id and $strTime $strIn $strgroup ;";
 				break;
 			case "time":
-				$sqlstr = "select $strplue from activity,caremember,user where user.uid=activity.leader_id and $strTime $strIn $strgroup order by aid desc;";
+				$sqlstr = "select $strplue from activity,caremember,user,post where post.pid=activity.pic_id and  user.uid=activity.leader_id and $strTime $strIn $strgroup order by aid desc;";
 				break;
 			case "care_num":
-				$sqlstr = "select $strplue from activity,caremember,user where user.uid=activity.leader_id and $strTime $strIn $strgroup order  by order_num desc where $strTime;";
+				$sqlstr = "select $strplue from activity,caremember,user,post where post.pid=activity.pic_id and  user.uid=activity.leader_id and $strTime $strIn $strgroup order  by order_num desc where $strTime;";
 				break;
 			case "join_num":
-				$sqlstr = "select $strplue from activity,caremember,user where user.uid=activity.leader_id and $strTime $strIn $strgroup order by _num desc;";
+				$sqlstr = "select $strplue from activity,caremember,user,post where post.pid=activity.pic_id and  user.uid=activity.leader_id and $strTime $strIn $strgroup order by _num desc;";
 				break;
 			default:
-				$sqlstr = "select $strplue from activity,caremember,user where user.uid=activity.leader_id and $strTime $strIn $strgroup ;";
+				$sqlstr = "select $strplue from activity,caremember,user,post where post.pid=activity.pic_id and  user.uid=activity.leader_id and $strTime $strIn $strgroup ;";
 				break;
 			}
 		}
@@ -379,19 +379,19 @@
 			switch($orderBy)
 			{
 				case null:
-					$sqlstr = "select $strplue from activity,caremember,user where user.uid=activity.leader_id and type_id=$typeId and $strTime $strIn $strgroup ;";
+					$sqlstr = "select $strplue from activity,caremember,user,post where post.pid=activity.pic_id and  user.uid=activity.leader_id and type_id=$typeId and $strTime $strIn $strgroup ;";
 					break;
 				case "time":
-					$sqlstr = "select $strplue from activity,caremember,user where user.uid=activity.leader_id and type_id=$typeId  and $strTime  $strIn $strgroup order by aid desc;";
+					$sqlstr = "select $strplue from activity,caremember,user,post where post.pid=activity.pic_id and  user.uid=activity.leader_id and type_id=$typeId  and $strTime  $strIn $strgroup order by aid desc;";
 					break;
 				case "care_num":
-					$sqlstr = "select $strplue from activity,caremember,user where user.uid=activity.leader_id and type_id=$typeId  and $strTime  $strIn $strgroup order by order_num desc;";
+					$sqlstr = "select $strplue from activity,caremember,user,post where post.pid=activity.pic_id and  user.uid=activity.leader_id and type_id=$typeId  and $strTime  $strIn $strgroup order by order_num desc;";
 					break;
 				case "join_num":
-					$sqlstr = "select $strplue from activity,caremember,user where user.uid=activity.leader_id and type_id=$typeId  and $strTime  $strIn $strgroup order by _num desc;";
+					$sqlstr = "select $strplue from activity,caremember,user,post where post.pid=activity.pic_id and  user.uid=activity.leader_id and type_id=$typeId  and $strTime  $strIn $strgroup order by _num desc;";
 					break;
 				default:
-					$sqlstr = "select $strplue from activity,caremember,user where user.uid=activity.leader_id type_id=$typeId  and $strTime $strIn $strgroup ;";
+					$sqlstr = "select $strplue from activity,caremember,user,post where post.pid=activity.pic_id and  user.uid=activity.leader_id type_id=$typeId  and $strTime $strIn $strgroup ;";
 					break;
 			}
 			
@@ -431,26 +431,26 @@
 					activity.end_time as end_time,activity.location as location,
 					activity.type_id as type_id,activity.leader_id as leader_id,
 					activity.care_num as care_num, activity.join_num as join_num,
-					user.rrid as rrid,user.uanme as uname";
+					user.rrid as rrid,user.uanme as uname,post.url as url";
 		$strTime = "end_time>=NOW()";
 		if($typeId==0)
 		{
 			switch($orderBy)
 			{
 			case null:
-				$sqlstr = "select $strplue from activity,joinmember,user where user.uid=activity.leader_id and $strTime $strIn $strgroup;";
+				$sqlstr = "select $strplue from activity,joinmember,user,post where post.pid=activity.pic_id and  user.uid=activity.leader_id and $strTime $strIn $strgroup;";
 				break;
 			case "time":
-				$sqlstr = "select $strplue from activity,joinmember,user where user.uid=activity.leader_id and $strTime $strIn $strgroup order by aid desc; ";
+				$sqlstr = "select $strplue from activity,joinmember,user,post where post.pid=activity.pic_id and  user.uid=activity.leader_id and $strTime $strIn $strgroup order by aid desc; ";
 				break;
 			case "care_num":
-				$sqlstr = "select $strplue from activity,joinmember,user where user.uid=activity.leader_id and $strTime $strIn $strgroup order  by order_num desc;";
+				$sqlstr = "select $strplue from activity,joinmember,user,post where post.pid=activity.pic_id and  user.uid=activity.leader_id and $strTime $strIn $strgroup order  by order_num desc;";
 				break;
 			case "join_num":
-				$sqlstr = "select $strplue from activity,joinmember,user where user.uid=activity.leader_id and $strTime $strIn $strgroup order by join_num desc;";
+				$sqlstr = "select $strplue from activity,joinmember,user,post where post.pid=activity.pic_id and  user.uid=activity.leader_id and $strTime $strIn $strgroup order by join_num desc;";
 				break;
 			default:
-				$sqlstr = "select $strplue from activity,joinmember,user where user.uid=activity.leader_id and $strTime $strIn $strgroup;";
+				$sqlstr = "select $strplue from activity,joinmember,user,post where post.pid=activity.pic_id and  user.uid=activity.leader_id and $strTime $strIn $strgroup;";
 				break;
 			}
 		}
@@ -459,19 +459,19 @@
 			switch($orderBy)
 			{
 				case null:
-					$sqlstr = "select $strplue from activity,joinmember,user where user.uid=activity.leader_id and type_id=$typeId and $strTime $strIn $strgroup;";
+					$sqlstr = "select $strplue from activity,joinmember,user,post where  post.pid=activity.pic_id and user.uid=activity.leader_id and type_id=$typeId and $strTime $strIn $strgroup;";
 					break;
 				case "time":
-					$sqlstr = "select $strplue from activity,joinmember,user where user.uid=activity.leader_id and type_id=$typeId  and $strTime  $strIn $strgroup order by aid desc;";
+					$sqlstr = "select $strplue from activity,joinmember,user,post where  post.pid=activity.pic_id and user.uid=activity.leader_id and type_id=$typeId  and $strTime  $strIn $strgroup order by aid desc;";
 					break;
 				case "care_num":
-					$sqlstr = "select $strplue from activity,joinmember,user where user.uid=activity.leader_id and type_id=$typeId  and $strTime  $strIn $strgroup order by order_num desc;";
+					$sqlstr = "select $strplue from activity,joinmember,user,post where  post.pid=activity.pic_id and user.uid=activity.leader_id and type_id=$typeId  and $strTime  $strIn $strgroup order by order_num desc;";
 					break;
 				case "join_num":
-					$sqlstr = "select $strplue from activity,joinmember,user where user.uid=activity.leader_id and type_id=$typeId  and $strTime  $strIn $strgroup order by join_num desc;" ;
+					$sqlstr = "select $strplue from activity,joinmember,user,post where  post.pid=activity.pic_id and user.uid=activity.leader_id and type_id=$typeId  and $strTime  $strIn $strgroup order by join_num desc;" ;
 					break;
 				default:
-					$sqlstr = "select $strplue from activity,joinmember,user where user.uid=activity.leader_id and type_id=$typeId  and $strTime $strIn $strgroup;";
+					$sqlstr = "select $strplue from activity,joinmember,user,post where  post.pid=activity.pic_id and user.uid=activity.leader_id and type_id=$typeId  and $strTime $strIn $strgroup;";
 					break;
 			}
 			
