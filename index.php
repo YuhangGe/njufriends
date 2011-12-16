@@ -4,7 +4,7 @@ require_once 'renren/requires.php';
 
 if (!empty($_GET['token'])) {
 	if( init_user($_GET['token'])){
-		header("Location: home.php?type_id=0&orderBy=time");
+		header("Location: home.php");
 		//echo "ok!";
 	}else{
 		header("Location: www.renren.com");
