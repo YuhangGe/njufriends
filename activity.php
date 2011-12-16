@@ -1,6 +1,15 @@
 <?php 
 	session_start();
+	
+	if(empty($_SESSION['uid'])){
+		header("index.php?redir=".urlencode(request_uri()));
+	}else{
+		$user_id = $_SESSION['uid'];
+	}
+	
 	require("db/db_function.php");
+	require("renren/config.inc.php");
+	
 	$aid = $_REQUEST['aid'];
 	$uidListStr="1,2";
 	//$uidListStr = $_SESSION['u_list'];
@@ -29,14 +38,80 @@
 			$joinUsers = get_JoinUsers($aid,null,7);
 	}
 	$comments = get_CommentList($aid);
+	
+	$is_owner = true;// $activity['uid']== $_SESSION['uid'];
+	
+	
+	function request_uri()
+{
+    if (isset($_SERVER['REQUEST_URI']))
+    {
+        $uri = $_SERVER['REQUEST_URI']; 
+    }
+    else
+    {
+        if (isset($_SERVER['argv']))
+        {
+            $uri = $_SERVER['PHP_SELF'] .'?'. $_SERVER['argv'][0];
+        }
+        else
+        {
+            $uri = $_SERVER['PHP_SELF'] .'?'. $_SERVER['QUERY_STRING'];
+        }
+    }
+    return $uri;
+}
 ?>
 <!doctype html>
 <html>
     <head>
         <title>Hello</title>
         <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-        <meta property="xn:app_id" content="172440" />
         <link style="text/css" rel="stylesheet" href="css/style2.css" />
+        <script type="text/javascript" src="renren/renren-yc.js"></script>
+        <script type="text/javascript" src="js/jquery-1.6.4.min.js"></script>
+        <script type="text/javascript">
+        	function invite(){
+        		Renren.ui({
+					url : 'request',
+					display : 'iframe',
+					top : 30,
+					params : {
+						app_id : '<?php echo $config -> APPID;?>',
+						accept_label : '参加 <?php echo $activity['name'];?>',
+						accept_url : 'http://apps.renren.com/njufriends/activity.php?aid=<?php echo $activity['aid'];?>',
+						actiontext : '呼唤朋友参加活动 <?php echo $activity['name'];?>',
+						max_friends : 10,
+						app_msg : '快来参加我发起的活动 <?php echo $activity['name'];?>',
+						redirect_uri : 'http://www.njufriends.com:8080/nju/invite_callback.html',
+						access_token : '<?php echo $_SESSION['access_token'];?>'
+					}
+				});
+        	}
+        	function feed(){
+        		Renren.ui({
+					url : 'feed',
+					display : 'iframe',
+					top : 30,
+					params : {
+						app_id : '<?php echo $config -> APPID;?>',
+						url : 'http://apps.renren.com/njufriends/activity.php?aid=<?php echo $activity['aid'];?>',
+						name : '快来参加 <?php echo $activity['name'];?>',
+						description : '。。。',
+						image : 'http://www.njufriends.com:8080/nju/images/p449897379.jpg',
+						action_name  : '加入活动',
+						action_link : 'http://apps.renren.com/njufriends/activity.php?aid=<?php echo $activity['aid'];?>',
+						redirect_uri : 'http://www.njufriends.com:8080/nju/feed_callback.html',
+						access_token : '<?php echo $_SESSION['access_token'];?>'
+					}
+				});
+        	}
+        	<?php if(isset($_REQUEST['invite']) && $is_owner):?>
+        	$(function(){
+        		feed();
+        	});
+        	<?php endif;?>
+        </script>
     </head>
     <body>
 
@@ -49,21 +124,23 @@
             </h2>
             <div class="general">
             	<div class="pic">
-            		<img src="images/p449897379.jpg" />
+            		<img src="<?php echo $activity['image'];?>" />
             	</div>
                 <div class="info">
                   	<p>开始时间: <?php echo getDateTime($activity['start_time']);?></p>
                     <p>结束时间: <?php echo getDateTime($activity['end_time']);?></p>
                     <p>地点: <?php echo $activity['location'];?></p>
-                    <p>发起人：<a href="#"><?php echo $leader['uname'];?></a></p>
+                    <p>发起人：<a target="_blank" href="http://www.renren.com/profile.do?id=<?php echo $activity['rrid'];?>"><?php echo $leader['uname'];?></a></p>
                     <p>类型：<?php echo $activity['type_id'];?></p>
                     <p>共<?php echo $activity['care_num'];?>人关注，<?php echo $activity['join_num'];?>人参加，其中好友<?php echo count($joinFriends);?>位参加</p>   
                 </div>
                 <div class="op" id="op_panel">
-                    <p><a href="#">我要关注</a></p>
-                    <p><a href="#">我要参加</a></p>
-                    <p><a href="#">呼唤好友</a></p>
-                    <p><a href="#">返回首页</a></p>
+                    <p><a href="javascript:care();">我要关注</a></p>
+                    <p><a href="javascript:join();">我要参加</a></p>
+                    <?php if($is_owner):?>
+                    	<p><a href="javascript:invite();">呼朋唤友</a></p>
+                    <?php endif;?>
+                    <p><a href="home.php">返回首页</a></p>
                 </div>
                 <div class="clear"></div>
             </div>
@@ -80,10 +157,12 @@
 						<div>
 							<?php foreach($joinFriends as $joinFriend):?>
 		                    <div class="person">
-		                    	<a href="#" class="p_t">
+
+		                    	<a target="_blank" href="http://www.renren.com/profile.do?id=<?php echo $joinFriend['rrid'];?>" class="p_t">
 		                    		 <img src="<?php echo $joinFriend['headurl'];?>"/>
 		                    	</a>
-		                    	<a href="<?php echo $joinFriend['rrid']?>"><?php echo $joinFriend['uname'];?></a>
+		                    	<a target="_blank" href="http://www.renren.com/profile.do?id=<?php echo $joinFriend['rrid'];?>"><?php echo $joinFriend['uname'];?></a>
+		                 
 		                    </div> 
 		                    <?php endforeach?>     
 		                </div>
@@ -94,10 +173,10 @@
 		                <div>
 		                	<?php foreach($careFriends as $careFriend):?>
 		                     <div class="person">
-		                    	<a href="#" class="p_t">
+		                    	<a target="_blank" href="http://www.renren.com/profile.do?id=<?php echo $careFriend['rrid'];?>" class="p_t">
 		                    		 <img src="<?php echo $careFriend['headurl'];?>"/>
 		                    	</a>
-		                    	<a href="<?php echo $careFriend['rrid']?>"><?php echo $careFriend['uname'];?></a>
+		                    	<a target="_blank" href="http://www.renren.com/profile.do?id=<?php echo $careFriend['rrid'];?>"><?php echo $careFriend['uname'];?></a>
 		                     </div>
 		                	<?php endforeach?>
 		                </div>
@@ -125,9 +204,9 @@
 		                        <li>
 		                        <?php foreach($comments as $comment):?>
 		                            <a class="c_head" href="#">
-		                            	<img src="http://hdn.xnimg.cn/photos/hdn421/20111126/2040/h_tiny_HkLm_6f930001ad782f76.jpg" />
+		                            	<img src="<?php echo $comment['headurl'];?>" />
 		                            </a>
-		                            <div><a href="#"><?php echo $comment['uname'];?></a>：<?php echo $comment['content'];?></div>
+		                            <div><a href="http://www.renren.com/profile.do?id=<?php echo $comment['rrid'];?>"><?php echo $comment['uname'];?></a>：<?php echo $comment['content'];?></div>
 		                            <p class="c_time"><?php echo $comment['time']?></p>
 		                        <?php endforeach?>
 		                        </li>
