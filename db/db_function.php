@@ -505,9 +505,10 @@
 		$description =  mysql_real_escape_string($description);
 		$leader_id = mysql_real_escape_string($leader_id);
 		$pic_id = mysql_real_escape_string($pic_id); 
-		if(strtotime($end_time))
+		if(strtotime($end_time)<time())
 		{
-			strtotime($end_time)-strtotime(date())
+			echo "wrong end time";
+			return array();
 		}
 		$sqlstr = "insert into activity(name, start_time, end_time,location,type_id,description,leader_id,pic_id) 
 		values('$name','$start_time','$end_time','$location','$type_id','$description','$leader_id','$pic_id');";
