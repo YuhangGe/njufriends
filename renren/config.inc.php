@@ -23,6 +23,8 @@ $config->APIKey		= '2726620386cd4c1fa01745a10aac8b5c';	//你的API Key，请自�
 $config->SecretKey	= '14ca0d74124346fb85cf604ad86713b2';	//你的API 密钥
 $config->APIVersion	= '1.0';	//当前API的版本号，不需要修改
 $config->decodeFormat	= 'json';	//默认的返回格式，根据实际情况修改，支持：json,xml
+$config->APPID = '172440';
+$config->APPURL = "http://apps.renren.com/njufriends/";
 /*
  *@ 以下接口内容来自http://wiki.dev.renren.com/wiki/API，编写时请遵守以下规则：
  *  key  (键名)		: API方法名，直接Copy过来即可，请区分大小写

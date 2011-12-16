@@ -4,7 +4,10 @@ require_once 'renren/requires.php';
 
 if (!empty($_GET['token'])) {
 	if( init_user($_GET['token'])){
-		header("Location: home.php");
+		if(empty($_GET['redir']))
+			header("Location: ".$_GET['redir']);
+		else
+			header("Location: home.php");
 		//echo "ok!";
 	}else{
 		header("Location: www.renren.com");
@@ -78,8 +81,10 @@ function init_user($token){
 
 	}
 	function pushToken(token) {
-		console.log(token);
-		window.location.href = "index.php?token=" + token;
+		if(location.href.test(/\?.*$/))
+			location.href= location.href + "&token=" + token;
+		else
+			location.href = "index.php?token=" + token;
 	}
 
 	function error() {
