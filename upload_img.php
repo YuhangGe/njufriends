@@ -1,4 +1,5 @@
 <?php
+require("db/db_function.php");
 static $types = array("image/gif", "image/bmp", "image/jpeg", "image/png");
 $onload_func = null;
 
@@ -15,7 +16,9 @@ if (!empty($_FILES)) {
 				$ext = $ext[$ext_c-1];
 			$file_name = "upload_images/".date("m-d-H-i-s").rand().".".$ext;
 			if (move_uploaded_file($_FILES["file"]["tmp_name"], $file_name)) {
-				$onload_func = "upload_callback(true, {url:'$file_name',id:234});";
+				$pid = insert_Post($file_name);
+				if(use_Post($pid))
+					$onload_func = "upload_callback(true, {url:'$file_name',id:$pid});";
 			} else {
 				$onload_func = "upload_callback(false);";
 			}

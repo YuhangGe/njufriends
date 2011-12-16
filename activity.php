@@ -11,8 +11,8 @@
 	require("renren/config.inc.php");
 	
 	$aid = $_REQUEST['aid'];
-	//$uidListStr="1,2";
-	$uidListStr = $_SESSION['u_list'];
+	$uidListStr="1,2";
+	//$uidListStr = $_SESSION['u_list'];
 	$uidList = explode(",",$uidListStr);
 	$activity = get_Activity($aid,null);
 	$joinUsers=null;
@@ -29,8 +29,11 @@
 	}
 	else
 	{
+		//var_dump($uidList);
 		$joinFriends = get_JoinUsers($aid,$uidList,10);
+		//var_dump($joinFriends);
 		$careFriends = get_CareUsers($aid,$uidList,10);
+		//var_dump($careFriends);
 		if($joinFriends==null || $careFriends==null)
 			$joinUsers = get_JoinUsers($aid,null,7);
 	}
@@ -152,14 +155,16 @@
 		<?php if($joinFriends!=null):?>
 			<h3>参与好友（共<?php echo count($joinFriends);?>人）</h3>
 						<div>
+							<?php foreach($joinFriends as $joinFriend):?>
 		                    <div class="person">
-		                    <?php foreach($joinFriends as $joinFriend):?>
+
 		                    	<a target="_blank" href="http://www.renren.com/profile.do?id=<?php echo $joinFriend['rrid'];?>" class="p_t">
 		                    		 <img src="<?php echo $joinFriend['headurl'];?>"/>
 		                    	</a>
 		                    	<a target="_blank" href="http://www.renren.com/profile.do?id=<?php echo $joinFriend['rrid'];?>"><?php echo $joinFriend['uname'];?></a>
-		                    <?php endforeach?>
-		                    </div>      
+		                 
+		                    </div> 
+		                    <?php endforeach?>     
 		                </div>
 		<?php endif?>
 		
