@@ -98,7 +98,7 @@
 						url : 'http://apps.renren.com/njufriends/activity.php?aid=<?php echo $activity['aid'];?>',
 						name : '快来参加 <?php echo $activity['name'];?>',
 						description : '。。。',
-						image : 'http://www.njufriends.com:8080/nju/images/p449897379.jpg',
+						image : '<?php echo $activity['url'];?>',
 						action_name  : '加入活动',
 						action_link : 'http://apps.renren.com/njufriends/activity.php?aid=<?php echo $activity['aid'];?>',
 						redirect_uri : 'http://www.njufriends.com:8080/nju/feed_callback.html',
@@ -124,14 +124,14 @@
             </h2>
             <div class="general">
             	<div class="pic">
-            		<img src="<?php echo $activity['image'];?>" />
+            		<img src="<?php echo $activity['url'];?>" />
             	</div>
                 <div class="info">
                   	<p>开始时间: <?php echo getDateTime($activity['start_time']);?></p>
                     <p>结束时间: <?php echo getDateTime($activity['end_time']);?></p>
                     <p>地点: <?php echo $activity['location'];?></p>
                     <p>发起人：<a target="_blank" href="http://www.renren.com/profile.do?id=<?php echo $activity['rrid'];?>"><?php echo $leader['uname'];?></a></p>
-                    <p>类型：<?php echo $activity['type_id'];?></p>
+                    <p>类型：<?php echo $types_config[$activity['type_id']];?></p>
                     <p>共<?php echo $activity['care_num'];?>人关注，<?php echo $activity['join_num'];?>人参加，其中好友<?php echo count($joinFriends);?>位参加</p>   
                 </div>
                 <div class="op" id="op_panel">

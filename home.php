@@ -61,22 +61,15 @@
                 	<?php foreach($activities as $activity):?>
                     <li class="list-item">
                     	<div class="i-left">
-                    	<?php 
-                    		if(empty($activity['pic_url']))
-                    		{
-                    			echo "<a href='#'><img src='images/e563905.jpg' /></a>";
-                    		}
-                    		else
-                    		{
-                    			echo "<a href='#'><img src='".$activity['pic_url']."' /></a>";
-                    		}
+                    	<?php  echo "<a href='javascript:void();'><img src='".$activity['url']."' /></a>";
+
                     	?>
                     	</div>
                     	<div class="i-right">
                     		<h3><a href="activity.php?aid=<?php echo $activity['aid'];?>"><?php echo $activity['name']?></a></h3>
 	                        <p>时间：<?php echo transDate($activity['start_time'],$activity['end_time']);?></p>
 	                        <p>地点：<?php echo $activity['location'];?></p>
-	                        <p>类型：<?php echo $activity['type_id']?></p>
+	                        <p>类型：<?php echo $types_config[$activity['type_id']];?></p>
 	                        <p>发起人：<a href="http://www.renren.com/profile.do?id=<?php echo $activity['rrid'];?>" target="_blank"><?php echo $activity['uname']?></a></p>
 	                        <p>共<?php echo $activity['join_num']?>人参加，<?php echo $activity['care_num']?>人关注；其中好友<?php if($activity['num']==null) echo 0;else echo $activity['num'];?>人参加</p>
                     	</div>

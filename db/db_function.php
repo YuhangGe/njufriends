@@ -6,7 +6,7 @@
 	
 	function doQuery($sqlstr)
 	{
-		echo $sqlstr;
+		//echo $sqlstr;
 		$result = mysql_query($sqlstr);
 		return $result;
 	}
@@ -557,7 +557,7 @@
 		if(mysql_num_rows($result)!=1)
 		{
 			//echo "no user";
-			return array();
+			return false;
 		}
 		//check if the activity exists
 		$sqlstr = "select * from activity where aid='$aid';";
@@ -565,7 +565,7 @@
 		if(mysql_num_rows($result)!=1)
 		{
 			//echo "no activity";
-			return array();
+			return false;
 		}
 		else
 		{
@@ -579,14 +579,14 @@
 		//echo $sqlstr;
 		if(!$result && $rows!=0)
 		{
-			echo "has cared";
-			return array();
+			//echo "has cared";
+			return false;
 		}
 		
 		$sqlstr = "insert into caremember(aid,uid) values('$aid','$uid');";
 		if(doQuery($sqlstr)!=true)
 		{
-			return array();
+			return false;
 		}
 		$care_num = $care_num +1;
 		$sqlstr = "update activity set care_num='$care_num' where aid='$aid';";
@@ -606,16 +606,16 @@
 		$result = doQuery($sqlstr);
 		if(mysql_num_rows($result)!=1)
 		{
-			echo "no user";
-			return array();
+			//echo "no user";
+			return false;
 		}
 		//check if the activity exists
 		$sqlstr = "select * from activity where aid='$aid';";
 		$result = doQuery($sqlstr);
 		if(mysql_num_rows($result)!=1)
 		{
-			echo "no activity";
-			return array();
+			//echo "no activity";
+			return false;
 		}
 		else
 		{
@@ -629,14 +629,14 @@
 		//echo $sqlstr;
 		if($rows!=0)
 		{
-			echo "has joined";
-			return array();
+			//echo "has joined";
+			return false;
 		}
 		
 		$sqlstr = "insert into joinmember(aid,uid) values('$aid','$uid');";
 		if(doQuery($sqlstr)!=true)
 		{
-			return array();
+			return false;
 		}
 		$join_num = $join_num +1;
 		$sqlstr = "update activity set join_num='$join_num' where aid='$aid';";
