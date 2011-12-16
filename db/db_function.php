@@ -6,6 +6,7 @@
 	
 	function doQuery($sqlstr)
 	{
+		//echo $sqlstr;
 		$result = mysql_query($sqlstr);
 		return $result;
 	}
@@ -22,7 +23,7 @@
 		$sqlstr="select * from user where rrid='$rrid';";
 		$result = doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
-		if($rows==0)
+		if(!$result && $rows==0)
 		{
 			return array();
 		}
@@ -38,7 +39,7 @@
 	$sqlstr="select * from user where uid='$uid';";
 		$result = doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
-		if($rows==0)
+		if(!$result && $rows==0)
 		{
 			return array();
 		}
@@ -80,7 +81,7 @@
 		$result = doQuery($sqlstr);
 		//echo $sqlstr;
 		$rows = mysql_num_rows($result);
-		if($rows==0)
+		if(!$result && $rows==0)
 		{
 			return array();
 		}
@@ -119,10 +120,10 @@
 		{
 			$strLimit = "limit 0,$limitNum";
 		}
-		$sqlstr="select joinmember.uid as uid,user.uname as uname,user.headurl,as headurl,user.rrid as rrid from joinmember,user where joinmember.aid='$aid' and user.uid=joinmember.uid $strIn $strLimit;";
+		$sqlstr="select joinmember.uid as uid,user.uname as uname,user.headurl as headurl,user.rrid as rrid from joinmember,user where joinmember.aid='$aid' and user.uid=joinmember.uid $strIn $strLimit;";
 		$result = doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
-		if($rows==0)
+		if(!$result && $rows==0)
 		{
 			return array();
 		}
@@ -143,7 +144,7 @@
 		$sqlstr="select user.rrid from user where user.uid=$uid;";
 		$result = doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
-		if($rows==0)
+		if(!$result && $rows==0)
 		{
 			return array();
 		}
@@ -160,7 +161,7 @@
 		$sqlstr = "select * from user where user.rrid='$rrid'";
 		$result = doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
-		if($rows!=0)
+		if(!$result && $rows!=0)
 		{
 			return array();
 		}
@@ -205,7 +206,7 @@
 						activity.end_time as end_time,activity.location as location,
 						activity.type_id as type_id,activity.leader_id as leader_id,
 						activity.care_num as care_num, activity.join_num as join_num,
-						user.uname as uname,activity.description as description, user.rrid as rrid";
+						user.uname as uname,activity.description as description,user.uid as uid, user.rrid as rrid";
 			$sqlstr="select $strplue from activity,user,joinmember where activity.aid=$aid $strIn $strgroup;";
 		}
 		else
@@ -214,13 +215,13 @@
 						activity.end_time as end_time,activity.location as location,
 						activity.type_id as type_id,activity.leader_id as leader_id,
 						activity.care_num as care_num, activity.join_num as join_num,
-						user.uname as uname,activity.description as description, user.rrid as rrid";
+						user.uname as uname,activity.description as description,user.uid as uid, user.rrid as rrid";
 			$sqlstr="select $strplue from activity,user where activity.aid=$aid;";
 		}
 		//echo $sqlstr;
 		$result =doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
-		if($rows==0)
+		if(!$result && $rows==0)
 		{
 			return array();
 		}
@@ -248,7 +249,7 @@
 		//echo $sqlstr;
 		$result = doQuery($sqlstr);
 		$num = mysql_num_rows($result);
-		if($num==0)
+		if(!$result && $num==0)
 		{
 			return array();
 		}
@@ -319,7 +320,7 @@
 		//echo $sqlstr;
 		$result = doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
-		if($rows==0)
+		if(!$result && $rows==0)
 		{
 			return array();
 		}	
@@ -399,7 +400,7 @@
 		//echo $sqlstr;
 		$result = doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
-		if($rows==0)
+		if(!$result && $rows==0)
 		{
 			return array();
 		}	
@@ -479,7 +480,7 @@
 		//echo $sqlstr;
 		$result = doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
-		if($rows==0)
+		if(!$result && $rows==0)
 		{
 			return array();
 		}	
@@ -531,7 +532,7 @@
 		$sqlstr = "select * from type;";
 		$result = doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
-		if($rows==0)
+		if(!$result && $rows==0)
 		{
 			return array();
 		}
@@ -576,7 +577,7 @@
 		$result =doQuery($sqlstr);
 		$rows = mysql_num_rows($result);
 		//echo $sqlstr;
-		if($rows!=0)
+		if(!$result && $rows!=0)
 		{
 			echo "has cared";
 			return array();
